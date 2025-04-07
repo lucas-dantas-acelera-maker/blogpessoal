@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PostagemService {
@@ -67,6 +69,13 @@ public class PostagemService {
         }
 
         postagemRepository.deleteById(postId);
+    }
+
+    public List<Postagem> buscarPostagens() {
+        Iterable<Postagem> postagensIterable = postagemRepository.findAll();
+        List<Postagem> postagens = new ArrayList<>();
+        postagensIterable.forEach(postagens::add);
+        return postagens;
     }
 
     public Postagem buscarPostagemPorId(Long postId) {

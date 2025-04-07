@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/postagens")
 public class PostagemController {
@@ -33,5 +35,11 @@ public class PostagemController {
     public ResponseEntity<Void> deletarPostagem(@PathVariable Long id) {
         postagemService.deletarPostagem(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Postagem>> buscarPostagens() {
+        List<Postagem> postagens = postagemService.buscarPostagens();
+        return new ResponseEntity<>(postagens, HttpStatus.OK);
     }
 }
