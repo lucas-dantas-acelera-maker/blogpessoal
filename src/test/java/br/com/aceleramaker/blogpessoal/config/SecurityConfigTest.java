@@ -13,7 +13,8 @@ public class SecurityConfigTest {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .sessionManagement(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
