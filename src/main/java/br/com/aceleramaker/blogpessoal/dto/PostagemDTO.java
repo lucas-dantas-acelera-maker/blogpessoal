@@ -11,15 +11,15 @@ public class PostagemDTO {
     private String texto;
 
     @NotNull(message = "ID do usuário é obrigatório")
-    private Long usuario_id;
+    private Long usuarioId;
 
     public PostagemDTO() {
     }
 
-    public PostagemDTO(String titulo, String texto, Long usuario_id) {
+    public PostagemDTO(String titulo, String texto, Long usuarioId) {
         this.titulo = titulo;
         this.texto = texto;
-        this.usuario_id = usuario_id;
+        this.usuarioId = usuarioId;
     }
 
     public String getTitulo() {
@@ -39,10 +39,10 @@ public class PostagemDTO {
     }
 
     public Long getUsuario_id() {
-        return usuario_id;
+        return usuarioId;
     }
 
-    public void setUsuario_id(Long usuario_id) {
-        this.usuario_id = usuario_id;
+    public void setUsuario_id(Long usuarioId) {
+        this.usuarioId = usuarioId;
     }
 }
