@@ -1,0 +1,24 @@
+package br.com.aceleramaker.blogpessoal.controller;
+
+import br.com.aceleramaker.blogpessoal.model.Usuario;
+import br.com.aceleramaker.blogpessoal.service.UsuarioService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/usuarios")
+public class UsuarioController {
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody Usuario usuario) {
+        Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
+        return new ResponseEntity<>(novoUsuario, HttpStatus.CREATED);
+   }
+}
