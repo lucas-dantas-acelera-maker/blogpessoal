@@ -1,6 +1,8 @@
 package br.com.aceleramaker.blogpessoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 
@@ -12,9 +14,11 @@ public class Postagem {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String titulo;
 
     @Column(nullable = false)
+    @NotBlank
     private String texto;
 
     @Column(nullable = false)
@@ -26,6 +30,7 @@ public class Postagem {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonIgnoreProperties("postagens")
     private Usuario usuario;
 
     public Postagem(String titulo, String texto) {
