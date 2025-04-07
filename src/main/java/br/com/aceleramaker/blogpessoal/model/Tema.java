@@ -26,6 +26,9 @@ public class Tema {
         this.descricao = descricao;
     }
 
+    public Tema() {
+    }
+
     public Long getId() {
         return id;
     }
