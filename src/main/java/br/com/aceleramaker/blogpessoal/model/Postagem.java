@@ -28,10 +28,10 @@ public class Postagem {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    public Postagem(String titulo, String texto, LocalDateTime data) {
+    public Postagem(String titulo, String texto) {
         this.titulo = titulo;
         this.texto = texto;
-        this.data = data;
+        this.data = LocalDateTime.now();
     }
 
     public Postagem() {
