@@ -47,6 +47,25 @@ public class PostagemService {
         return postagemRepository.save(postagem);
     }
 
+    public Postagem alterarPostagem(Long postId, PostagemDTO postagemDTO) {
+        Postagem postagemAlterada = buscarPostagemPorId(postId);
+        Usuario novoUsuario = buscarUsuarioAutorPorId(postagemDTO.getUsuarioId());
+        Tema novoTema = buscarTemaPostagemPorId(postagemDTO.getTemaId());
+
+        postagemAlterada.setTitulo(postagemDTO.getTitulo());
+        postagemAlterada.setTexto(postagemDTO.getTexto());
+        postagemAlterada.setData(LocalDateTime.now());
+        postagemAlterada.setUsuario(novoUsuario);
+        postagemAlterada.setTema(novoTema);
+
+        return postagemRepository.save(postagemAlterada);
+    }
+
+    public Postagem buscarPostagemPorId(Long postId) {
+        return postagemRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Postagem não encontrada pelo ID fornecido"));
+    }
+
     public Usuario buscarUsuarioAutorPorId(Long usuarioId) {
         return usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado pelo ID fornecido"));
