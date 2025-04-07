@@ -42,4 +42,14 @@ public class PostagemController {
         List<Postagem> postagens = postagemService.buscarPostagens();
         return new ResponseEntity<>(postagens, HttpStatus.OK);
     }
+
+    @GetMapping("/filtro")
+    public ResponseEntity<List<Postagem>> buscarPostagensComFiltro(
+            @RequestParam(required = false, name = "autor") Long usuarioId,
+            @RequestParam(required = false, name = "tema") Long temaId
+    ) {
+        List<Postagem> postagens = postagemService.buscarPostagensComFiltro(usuarioId, temaId);
+
+        return new ResponseEntity<>(postagens, HttpStatus.OK);
+    }
 }

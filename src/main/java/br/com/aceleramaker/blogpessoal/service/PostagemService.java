@@ -78,6 +78,15 @@ public class PostagemService {
         return postagens;
     }
 
+    public List<Postagem> buscarPostagensComFiltro(Long usuarioId, Long temaId) {
+        List<Postagem> postagens = buscarPostagens();
+
+        return postagens.stream()
+                .filter(post -> (usuarioId == null || post.getUsuario().getId().equals(usuarioId))
+                        && (temaId == null || post.getTema().getId().equals(temaId)))
+                .toList();
+    }
+
     public Postagem buscarPostagemPorId(Long postId) {
         return postagemRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Postagem não encontrada pelo ID fornecido"));
