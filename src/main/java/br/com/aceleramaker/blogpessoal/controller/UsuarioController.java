@@ -21,4 +21,11 @@ public class UsuarioController {
         Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
         return new ResponseEntity<>(novoUsuario, HttpStatus.CREATED);
    }
+
+   @PutMapping("/{id}")
+    public ResponseEntity<Usuario> alterarUsuario(@Valid @PathVariable Long id, @RequestBody Usuario usuario) {
+        usuario.setId(id);
+        Usuario usuarioAlterado = usuarioService.alterarUsuario(usuario);
+        return new ResponseEntity<>(usuarioAlterado, HttpStatus.OK);
+   }
 }
