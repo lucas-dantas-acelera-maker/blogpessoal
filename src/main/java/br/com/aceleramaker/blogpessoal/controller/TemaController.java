@@ -28,4 +28,10 @@ public class TemaController {
         Tema temaAlterado = temaService.alterarTema(tema);
         return new ResponseEntity<>(temaAlterado, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarTema(@PathVariable Long id) {
+        temaService.deletarTema(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

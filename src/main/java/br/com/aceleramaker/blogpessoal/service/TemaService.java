@@ -29,4 +29,12 @@ public class TemaService {
 
         return temaRepository.save(tema);
     }
+
+    public void deletarTema(Long id) {
+        if (!temaRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tema não encontrado com o ID fornecido.");
+        }
+
+        temaRepository.deleteById(id);
+    }
 }
