@@ -1,35 +1,33 @@
 package br.com.aceleramaker.blogpessoal.controller;
 
+import br.com.aceleramaker.blogpessoal.config.SecurityConfigTest;
 import br.com.aceleramaker.blogpessoal.dto.UsuarioLoginDTO;
 import br.com.aceleramaker.blogpessoal.model.Usuario;
 import br.com.aceleramaker.blogpessoal.security.JwtSecurity;
 import br.com.aceleramaker.blogpessoal.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.*;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Profile("test")
-public class UsuarioControllerTest {
-
-    @LocalServerPort
-    private int port;
+@WebMvcTest(UsuarioController.class)
+@Import({UsuarioControllerTest.MockConfig.class, SecurityConfigTest.class})
+class UsuarioControllerTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -37,107 +35,93 @@ public class UsuarioControllerTest {
     @Autowired
     private JwtSecurity jwtSecurity;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    private String getUrl(String path) {
-        return "http://localhost:" + port + "/api/usuarios" + path;
+    private Usuario usuario;
+    private UsuarioLoginDTO loginDTO;
+
+    @BeforeEach
+    void setUp() {
+        usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setNome("Maria");
+        usuario.setUsuario("maria@email.com");
+        usuario.setSenha("123456");
+
+        loginDTO = new UsuarioLoginDTO();
+        loginDTO.setUsuario("maria@email.com");
+        loginDTO.setSenha("123456");
     }
 
     @Test
-    void deveCriarUsuario() {
-        Usuario usuario = new Usuario(null, "novoUsuario", "senha123", "email@email.com");
+    void deveCriarUsuarioComSucesso() throws Exception {
+        when(usuarioService.salvarUsuario(any(Usuario.class))).thenReturn(usuario);
 
-        ResponseEntity<Usuario> response = restTemplate.postForEntity(
-                getUrl(""),
-                usuario,
-                Usuario.class
-        );
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUsuario()).isEqualTo("novoUsuario");
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(usuario)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.nome").value(usuario.getNome()));
     }
 
     @Test
-    void deveAutenticarUsuarioERetornarToken() {
-        Usuario usuario = new Usuario(null, "loginuser", "senha123", "email@teste.com");
-        usuarioService.salvarUsuario(usuario); // salva com senha criptografada
+    void deveAlterarUsuarioComSucesso() throws Exception {
+        when(usuarioService.alterarUsuario(any(Usuario.class))).thenReturn(usuario);
 
-        UsuarioLoginDTO login = new UsuarioLoginDTO("loginuser", "senha123");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<UsuarioLoginDTO> request = new HttpEntity<>(login, headers);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                getUrl("/login"),
-                request,
-                String.class
-        );
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).contains("Bearer ");
+        mockMvc.perform(put("/api/usuarios/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(usuario)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.usuario").value(usuario.getUsuario()));
     }
 
     @Test
-    void deveAlterarUsuario() {
-        Usuario usuario = new Usuario(null, "updateuser", "senha123", "update@email.com");
-        Usuario salvo = usuarioService.salvarUsuario(usuario);
+    void deveDeletarUsuarioComSucesso() throws Exception {
+        doNothing().when(usuarioService).deletarUsuario(1L);
 
-        salvo.setUsuario("usuarioAtualizado");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Usuario> request = new HttpEntity<>(salvo, headers);
-
-        ResponseEntity<Usuario> response = restTemplate.exchange(
-                getUrl("/" + salvo.getId()),
-                HttpMethod.PUT,
-                request,
-                Usuario.class
-        );
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUsuario()).isEqualTo("usuarioAtualizado");
+        mockMvc.perform(delete("/api/usuarios/1"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void deveDeletarUsuario() {
-        Usuario usuario = new Usuario(null, "deleteuser", "senha123", "delete@email.com");
-        Usuario salvo = usuarioService.salvarUsuario(usuario);
+    void deveAutenticarUsuarioComSucesso() throws Exception {
+        when(usuarioService.autenticarUsuario(any(UsuarioLoginDTO.class))).thenReturn(usuario);
+        when(jwtSecurity.gerarTokenJwt(usuario.getUsuario())).thenReturn("fake-jwt-token");
 
-        ResponseEntity<Void> response = restTemplate.exchange(
-                getUrl("/" + salvo.getId()),
-                HttpMethod.DELETE,
-                null,
-                Void.class
-        );
+        mockMvc.perform(post("/api/usuarios/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Bearer fake-jwt-token"));
+    }
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    @Test
+    void deveFalharAutenticacaoComCredenciaisInvalidas() throws Exception {
+        when(usuarioService.autenticarUsuario(any(UsuarioLoginDTO.class))).thenReturn(null);
+
+        mockMvc.perform(post("/api/usuarios/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Usuário ou senha inválidos"));
     }
 
     @TestConfiguration
-    static class TestSecurityConfig {
-
+    static class MockConfig {
         @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-            http
-                    .csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                    .sessionManagement(AbstractHttpConfigurer::disable);
-            return http.build();
+        public UsuarioService usuarioService() {
+            return Mockito.mock(UsuarioService.class);
         }
-    }
-
-    @TestConfiguration
-    static class TestBeans {
 
         @Bean
         public JwtSecurity jwtSecurity() {
-            return mock(JwtSecurity.class);
+            return Mockito.mock(JwtSecurity.class);
+        }
+
+        @Bean
+        public AuthenticationManager authManager() {
+            return Mockito.mock(AuthenticationManager.class);
         }
     }
 }
