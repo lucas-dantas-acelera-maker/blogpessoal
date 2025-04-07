@@ -26,6 +26,7 @@ public class Postagem {
 
     @ManyToOne
     @JoinColumn(name = "tema_id")
+    @JsonIgnoreProperties("postagens")
     private Tema tema;
 
     @ManyToOne
