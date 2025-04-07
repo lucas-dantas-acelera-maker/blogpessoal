@@ -1,6 +1,7 @@
 package br.com.aceleramaker.blogpessoal.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +14,19 @@ public class Usuario {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
     @Column(nullable = false)
+    @NotBlank(message = "Nome de usuário é obrigatório")
     private String usuario;
 
     @Column(nullable = false)
+    @NotBlank(message = "Senha é obrigatória")
     private String senha;
 
-    @Column
-    private String foto;
+    @Column()
+    private String foto = "https://avatars.githubusercontent.com/u/130024434?v=4";
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Postagem> postagens = new ArrayList<>();
