@@ -1,6 +1,8 @@
 package br.com.aceleramaker.blogpessoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +15,11 @@ public class Tema {
     private Long id;
 
     @Column
+    @NotBlank(message = "Nome/descricao do tema é obrigatória")
     private String descricao;
 
     @OneToMany(mappedBy = "tema", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("tema")
     private final List<Postagem> postagens = new ArrayList<>();
 
     public Tema(String descricao) {
