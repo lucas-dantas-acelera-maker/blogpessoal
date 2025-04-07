@@ -1,5 +1,6 @@
 package br.com.aceleramaker.blogpessoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -29,6 +30,7 @@ public class Usuario {
     private String foto = "https://avatars.githubusercontent.com/u/130024434?v=4";
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("usuario")
     private final List<Postagem> postagens = new ArrayList<>();
 
     public Usuario(String nome, String usuario, String senha, String foto) {
