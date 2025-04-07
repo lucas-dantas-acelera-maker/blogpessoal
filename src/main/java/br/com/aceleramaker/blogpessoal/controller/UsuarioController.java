@@ -28,4 +28,10 @@ public class UsuarioController {
         Usuario usuarioAlterado = usuarioService.alterarUsuario(usuario);
         return new ResponseEntity<>(usuarioAlterado, HttpStatus.OK);
    }
+
+   @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        usuarioService.deletarUsuario(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+   }
 }

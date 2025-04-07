@@ -29,4 +29,12 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
+
+    public void deletarUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado pelo ID fornecido.");
+        }
+
+        usuarioRepository.deleteById(id);
+    }
 }
