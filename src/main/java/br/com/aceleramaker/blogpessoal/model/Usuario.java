@@ -2,6 +2,9 @@ package br.com.aceleramaker.blogpessoal.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -20,6 +23,9 @@ public class Usuario {
 
     @Column
     private String foto;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Postagem> postagens = new ArrayList<>();
 
     public Usuario(String nome, String usuario, String senha, String foto) {
         this.nome = nome;
@@ -65,5 +71,14 @@ public class Usuario {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public List<Postagem> getPostagens() {
+        return postagens;
+    }
+
+    public void adicionarPostagem(Postagem postagem) {
+        this.postagens.add(postagem);
+        postagem.setUsuario(this);
     }
 }
