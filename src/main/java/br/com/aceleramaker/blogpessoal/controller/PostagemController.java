@@ -28,4 +28,10 @@ public class PostagemController {
         Postagem postagemAlterada = postagemService.alterarPostagem(id, postagemDTO);
         return new ResponseEntity<>(postagemAlterada, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarPostagem(@PathVariable Long id) {
+        postagemService.deletarPostagem(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

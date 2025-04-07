@@ -61,6 +61,14 @@ public class PostagemService {
         return postagemRepository.save(postagemAlterada);
     }
 
+    public void deletarPostagem(Long postId) {
+        if (!postagemRepository.existsById(postId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Postagem não encontrada pelo ID fornecido");
+        }
+
+        postagemRepository.deleteById(postId);
+    }
+
     public Postagem buscarPostagemPorId(Long postId) {
         return postagemRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Postagem não encontrada pelo ID fornecido"));
