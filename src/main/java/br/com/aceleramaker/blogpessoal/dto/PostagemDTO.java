@@ -13,13 +13,17 @@ public class PostagemDTO {
     @NotNull(message = "ID do usuário é obrigatório")
     private Long usuarioId;
 
+    @NotNull(message = "ID do tema é obrigatório")
+    private Long temaId;
+
     public PostagemDTO() {
     }
 
-    public PostagemDTO(String titulo, String texto, Long usuarioId) {
+    public PostagemDTO(String titulo, String texto, Long usuarioId, Long temaId) {
         this.titulo = titulo;
         this.texto = texto;
         this.usuarioId = usuarioId;
+        this.temaId = temaId;
     }
 
     public String getTitulo() {
@@ -38,11 +42,19 @@ public class PostagemDTO {
         this.texto = texto;
     }
 
-    public Long getUsuario_id() {
+    public Long getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuario_id(Long usuarioId) {
+    public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
+    }
+
+    public Long getTemaId() {
+        return temaId;
+    }
+
+    public void setTemaId(Long temaId) {
+        this.temaId = temaId;
     }
 }
