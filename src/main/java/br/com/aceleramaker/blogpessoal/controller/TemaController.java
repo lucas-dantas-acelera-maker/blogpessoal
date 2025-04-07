@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/temas")
 public class TemaController {
@@ -33,5 +35,11 @@ public class TemaController {
     public ResponseEntity<Void> deletarTema(@PathVariable Long id) {
         temaService.deletarTema(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Tema>> buscarTemas() {
+        List<Tema> temas = temaService.buscarTemas();
+        return new ResponseEntity<>(temas, HttpStatus.OK);
     }
 }

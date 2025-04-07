@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TemaService {
     private final TemaRepository temaRepository;
@@ -36,5 +39,12 @@ public class TemaService {
         }
 
         temaRepository.deleteById(id);
+    }
+
+    public List<Tema> buscarTemas() {
+        Iterable<Tema> temaIterable = temaRepository.findAll();
+        List<Tema> temas = new ArrayList<>();
+        temaIterable.forEach(temas::add);
+        return temas;
     }
 }
