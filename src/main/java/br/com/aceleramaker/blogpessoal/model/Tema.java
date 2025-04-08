@@ -1,6 +1,7 @@
 package br.com.aceleramaker.blogpessoal.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -9,17 +10,22 @@ import java.util.List;
 
 @Entity
 @Table(name = "temas")
+@Schema(description = "Representa um tema utilizado nas postagens do blog")
 public class Tema {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador único do tema", example = "1")
     private Long id;
 
     @Column
     @NotBlank(message = "Nome/descricao do tema é obrigatória")
+    @Schema(description = "Nome ou descrição do tema", example = "Tecnologia")
     private String descricao;
 
     @OneToMany(mappedBy = "tema", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("tema")
+    @Schema(description = "Lista de postagens associadas ao tema")
     private final List<Postagem> postagens = new ArrayList<>();
 
     public Tema(String descricao) {
