@@ -36,6 +36,7 @@ O sistema é composto por três entidades principais e uma classe auxiliar:
 - ✅ **Hibernate**
 - ✅ **Bean Validation (Jakarta)**
 - ✅ **Swagger/OpenAPI** – via `springdoc-openapi`
+- ✅ **SonarQube** – análise de qualidade de código
 
 ---
 
@@ -46,13 +47,14 @@ O sistema é composto por três entidades principais e uma classe auxiliar:
 - Java 21
 - Maven
 - MySQL
+- SonarQube (opcional, para análise de qualidade)
 
 ### 🗃️ Configuração do banco de dados
 
-Crie um banco no MySQL com o nome `banco` (ou personalize no arquivo `application.properties`).
+Crie um banco no MySQL com o nome `blogpessoal` (ou personalize no arquivo `application.properties`).
 
 ```sql
-CREATE DATABASE banco;
+CREATE DATABASE blogpessoal;
 ```
 
 ### ⚙️ Configuração do `application.properties`
@@ -61,7 +63,7 @@ Crie o arquivo `src/main/resources/application.properties` com o seguinte conte�
 
 ```properties
 spring.application.name=blogpessoal
-spring.datasource.url=jdbc:mysql://localhost:porta/nome_do_banco
+spring.datasource.url=jdbc:mysql://localhost:porta/nome_do_banco_criado
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 
@@ -148,8 +150,27 @@ Authorization: Bearer <token>
 
 ## 🧪 Testes
 
-A aplicação possui cobertura de testes unitários usando **JUnit 5** e **Mockito**, especialmente focados nos controllers (`UsuarioController`, `TemaController`, etc). O uso de `@Mock` ao invés de `@MockBean` é adotado para garantir testes verdadeiramente unitários.
+A aplicação possui cobertura de testes unitários usando **JUnit 5** e **Mockito**, especialmente focados nos controllers (`UsuarioController`, `TemaController` e `PostagemController`). O uso de `@Mock` ao invés de `@MockBean` é adotado para garantir testes verdadeiramente unitários.
 
+---
+
+## 📈 Análise com SonarQube
+
+Este projeto está configurado para ser analisado com **SonarQube**, ferramenta que identifica problemas de qualidade no código.
+
+### ▶️ Executando a análise:
+
+1. Inicie o SonarQube localmente (ex: http://localhost:9000)
+2. Gere o token de autenticação pela interface do SonarQube
+3. No terminal, execute:
+
+```bash
+mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=blogpessoal \
+  -Dsonar.projectName="Blog Pessoal Backend" \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=SEU_TOKEN_AQUI
+```
 ---
 
 ## 🔒 Classificação
@@ -161,3 +182,4 @@ A aplicação possui cobertura de testes unitários usando **JUnit 5** e **Mocki
 ## 👨‍💻 Autor
 
 💻 Desenvolvido por Lucas Maia Dantas – Acelera Maker 🚀
+
