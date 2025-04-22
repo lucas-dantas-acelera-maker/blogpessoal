@@ -2,11 +2,12 @@ package br.com.aceleramaker.blogpessoal.security;
 
 import br.com.aceleramaker.blogpessoal.model.Usuario;
 import br.com.aceleramaker.blogpessoal.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class UsuarioSecurityService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String usuario) {
         Usuario usuarioEncontrado = usuarioRepository.findByUsuario(usuario)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
 
         return new User(usuarioEncontrado.getUsuario(), usuarioEncontrado.getSenha(), new ArrayList<>());
     }
