@@ -15,7 +15,6 @@ public class PostagemDTO {
     @Schema(description = "Conteúdo da postagem", example = "Hoje vamos aprender como criar APIs REST com Spring Boot...")
     private String texto;
 
-    @NotNull(message = "ID do usuário é obrigatório")
     @Schema(description = "ID do usuário autor da postagem", example = "1")
     private Long usuarioId;
 
@@ -26,10 +25,9 @@ public class PostagemDTO {
     public PostagemDTO() {
     }
 
-    public PostagemDTO(String titulo, String texto, Long usuarioId, Long temaId) {
+    public PostagemDTO(String titulo, String texto, Long temaId) {
         this.titulo = titulo;
         this.texto = texto;
-        this.usuarioId = usuarioId;
         this.temaId = temaId;
     }
 

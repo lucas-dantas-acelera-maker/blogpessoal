@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +41,8 @@ public class PostagemController {
             @ApiResponse(responseCode = "403", description = "Acesso proibido")
     })
     public ResponseEntity<Postagem> criarPostagem(@Valid @RequestBody PostagemDTO postagemDTO) {
-        Postagem novaPostagem = postagemService.salvarPostagem(postagemDTO);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Postagem novaPostagem = postagemService.salvarPostagem(postagemDTO, username);
         return new ResponseEntity<>(novaPostagem, HttpStatus.CREATED);
     }
 
